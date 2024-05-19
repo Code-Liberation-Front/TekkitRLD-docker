@@ -14,7 +14,7 @@ dl_modpack() {
 
 unzip_modpack() {
     unzip $FILENAME
-    #mv "$FOLDERNM"/* .
+    mv "$FOLDERNM"/* .
     rm -rf "$FOLDERNM"
 }
 
