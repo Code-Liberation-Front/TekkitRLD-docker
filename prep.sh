@@ -14,7 +14,7 @@ dl_modpack() {
 
 unzip_modpack() {
     unzip $FILENAME
-    mv "$FOLDERNM"/* .
+    #mv "$FOLDERNM"/* .
     rm -rf "$FOLDERNM"
 }
 
@@ -25,7 +25,6 @@ cd /data
 if [ -f "$FILENAME" ]; then
     echo "Installation Exists"
     rm -rf $VARPMT
-    rm -rf $PROPPMT
 
     #Ensures there is a valid variable template file
     if [ -f "$VARTMP" ]; then
@@ -38,14 +37,16 @@ if [ -f "$FILENAME" ]; then
 
     #Ensures there is a valid server.properties template file
     if [ -f "$PROPTMP" ]; then
-        cp $PROPTMP $PROPPMT
+        echo "Valid $PROPPMT file"
     else
         echo "Missing $PROPTMP file: Unzipping modpack for replacement"
         unzip_modpack
         cp $PROPPMT $PROPTMP
     fi
 else
-    
+    #Clean up old files
+    rm -rf config defaultconfigs mods
+
     #If there is no installation, it downloads the modpack and creates the installation
     dl_modpack
     unzip_modpack
@@ -60,9 +61,10 @@ echo eula=true > eula.txt
 #Sets Variables
 echo ""
 echo "Variables:"
-sed 's%-Xms1024M -Xmx4096M%'"$JAVA_ARGS"'%' $VARPMT
-sed -i 's%-Xms1024M -Xmx4096M%'"$JAVA_ARGS"'%' $VARPMT
-sed -i 's%enable-rcon=false%enable-rcon=true%' $PROPPMT
+sed 's%JAVA_ARGS="-Xms1G -Xmx6G %JAVA_ARGS="'"$JAVA_ARGS "'%' $VARPMT
+sed -i 's%JAVA_ARGS="-Xms1G -Xmx6G %JAVA_ARGS="'"$JAVA_ARGS "'%' $VARPMT
+
+echo enable-rcon=true>>$PROPPMT
 echo rcon.password=$RCON_PASS>>$PROPPMT
 echo 'rcon.port=25575'>>$PROPPMT
 echo 'broadcast-rcon-to-ops=false'>>$PROPPMT
